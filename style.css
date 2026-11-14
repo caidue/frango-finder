@@ -1,0 +1,150 @@
+:root {
+  --yellow: #ffcf1a;
+  --yellow-deep: #ffb910;
+  --orange: #f47b20;
+  --red: #dd2a1b;
+  --brown: #3a1c0d;
+  --cream: #fff6dc;
+
+  /* The arrow's length: 70% of the screen's shorter side, so it never
+     clips while it turns. */
+  --arrow-size: 70vmin;
+  --medallion-size: 27vmin;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: var(--yellow);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  /* Retro sunburst, with the edges burning into orange. */
+  background:
+    radial-gradient(farthest-corner at 50% 50%, transparent 55%, rgba(244, 123, 32, 0.4) 100%),
+    repeating-conic-gradient(from -7.5deg at 50% 50%,
+      var(--yellow) 0deg 15deg,
+      var(--yellow-deep) 15deg 30deg);
+}
+
+/* Inner frame line, like a diner menu border. */
+#stage::before {
+  content: "";
+  position: absolute;
+  inset: calc(env(safe-area-inset-top, 0px) + 3vmin)
+         calc(env(safe-area-inset-right, 0px) + 3vmin)
+         calc(env(safe-area-inset-bottom, 0px) + 3vmin)
+         calc(env(safe-area-inset-left, 0px) + 3vmin);
+  border: 0.9vmin solid var(--red);
+  border-radius: 4vmin;
+  box-shadow: inset 0 0 0 0.45vmin var(--cream), 0 0 0 0.45vmin var(--cream);
+  pointer-events: none;
+}
+
+.arrow-shadow,
+.medallion {
+  grid-area: 1 / 1;
+}
+
+/* The shadow lives on the wrapper so it stays put while the arrow turns. */
+.arrow-shadow {
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  filter: drop-shadow(1.1vmin 1.1vmin 0 var(--brown));
+  transition: opacity 0.4s ease;
+}
+
+#arrow {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  will-change: transform;
+}
+
+#arrow polygon {
+  fill: var(--red);
+  stroke: var(--brown);
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+
+.medallion {
+  width: var(--medallion-size);
+  height: var(--medallion-size);
+  border-radius: 50%;
+  background: #fff;
+  border: 1vmin solid var(--brown);
+  box-shadow:
+    inset 0 0 0 0.9vmin var(--yellow),
+    inset 0 0 0 1.5vmin var(--orange),
+    0.8vmin 0.8vmin 0 var(--brown);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  z-index: 1;
+  transition: transform 0.4s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.medallion img {
+  width: 78%;
+  height: auto;
+  pointer-events: none;
+  /* The photo's shadow is cut off at its bottom edge; fade it out. */
+  -webkit-mask-image: linear-gradient(#000 84%, transparent 99%);
+  mask-image: linear-gradient(#000 84%, transparent 99%);
+}
+
+#status {
+  position: absolute;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 9vmin);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0.55em 1.1em;
+  max-width: 80vw;
+  font: 700 clamp(13px, 3.8vmin, 20px)/1.2 Rockwell, "American Typewriter", "Roboto Slab", Georgia, serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  background: var(--red);
+  border: 0.6vmin solid var(--brown);
+  border-radius: 999px;
+  box-shadow: 0.6vmin 0.6vmin 0 var(--brown);
+}
+
+#status:empty { display: none; }
+
+/* Not pointing anywhere yet: the arrow idles. */
+body:not([data-state="ready"]) .arrow-shadow { opacity: 0.7; }
+
+/* Arrived: the arrow steps aside and the chicken takes the stage. */
+body[data-state="arrived"] .arrow-shadow { opacity: 0; }
+body[data-state="arrived"] .medallion {
+  transform: scale(2);
+  animation: arrived 1.1s ease-in-out 0.4s infinite alternate;
+}
+
+@keyframes arrived {
+  from { transform: scale(2); }
+  to   { transform: scale(2.25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-state="arrived"] .medallion { animation: none; }
+}
