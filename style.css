@@ -9,7 +9,7 @@
   /* The arrow's length: 70% of the screen's shorter side, so it never
      clips while it turns. */
   --arrow-size: 70vmin;
-  --medallion-size: 27vmin;
+  --medallion-size: 20vmin;
 }
 
 * { box-sizing: border-box; }
@@ -75,13 +75,18 @@ html, body {
   will-change: transform;
 }
 
-#arrow polygon {
-  fill: var(--red);
+#arrow * {
   stroke: var(--brown);
-  stroke-width: 2.6;
+  stroke-width: 1.7;
   stroke-linejoin: round;
-  paint-order: stroke fill;
 }
+
+#arrow .ck-body { fill: var(--cream); }
+#arrow .ck-wing,
+#arrow .ck-comb * { fill: var(--red); }
+#arrow .ck-tail *,
+#arrow .ck-beak { fill: var(--orange); }
+#arrow .ck-eye { fill: var(--brown); stroke: none; }
 
 .medallion {
   width: var(--medallion-size);
@@ -101,9 +106,11 @@ html, body {
 }
 
 .medallion img {
-  width: 78%;
+  width: 76%;
   height: auto;
   pointer-events: none;
+  /* The photo's white corners melt into whatever is behind them. */
+  mix-blend-mode: multiply;
   /* The photo's shadow is cut off at its bottom edge; fade it out. */
   -webkit-mask-image: linear-gradient(#000 84%, transparent 99%);
   mask-image: linear-gradient(#000 84%, transparent 99%);

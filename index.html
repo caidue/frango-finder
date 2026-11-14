@@ -21,7 +21,25 @@
   <main id="stage" aria-live="polite">
     <div class="arrow-shadow">
       <svg id="arrow" viewBox="0 0 100 100" aria-hidden="true">
-        <polygon points="50,3 90,45 67,45 67,97 33,97 33,45 10,45"/>
+        <!-- A chicken seen from above, running forward: the beak is the tip,
+             the swept-back wings are the arrowhead, the tail is the fletching. -->
+        <g class="ck-tail">
+          <ellipse cx="50" cy="87" rx="5.5" ry="10.5" transform="rotate(-30 50 76)"/>
+          <ellipse cx="50" cy="87" rx="5.5" ry="10.5" transform="rotate(30 50 76)"/>
+          <ellipse cx="50" cy="87.5" rx="5.5" ry="10.5"/>
+        </g>
+        <path class="ck-wing" d="M39,27 L5,52 Q8,60 17,57 Q16,65 25,62 Q25,70 35,65 Z"/>
+        <path class="ck-wing" transform="translate(100 0) scale(-1 1)" d="M39,27 L5,52 Q8,60 17,57 Q16,65 25,62 Q25,70 35,65 Z"/>
+        <ellipse class="ck-body" cx="50" cy="53" rx="20" ry="27"/>
+        <polygon class="ck-beak" points="50,1 41.5,15 58.5,15"/>
+        <circle class="ck-body" cx="50" cy="19.5" r="10.5"/>
+        <g class="ck-comb">
+          <circle cx="50" cy="25" r="2.8"/>
+          <circle cx="50" cy="20" r="2.8"/>
+          <circle cx="50" cy="15" r="2.8"/>
+        </g>
+        <circle class="ck-eye" cx="43.2" cy="17" r="1.5"/>
+        <circle class="ck-eye" cx="56.8" cy="17" r="1.5"/>
       </svg>
     </div>
 

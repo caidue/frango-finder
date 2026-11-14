@@ -1,6 +1,6 @@
 // Keeps the app shell available offline. Restaurant lookups always go to the
 // network; only this site's own files are cached.
-const CACHE = 'frango-shell-v1';
+const CACHE = 'frango-shell-v3';
 const SHELL = [
   './',
   'index.html',
@@ -14,7 +14,7 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL.map((url) => new Request(url, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
@@ -33,10 +33,13 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     caches.open(CACHE).then(async (cache) => {
-      const cached = await cache.match(req, { ignoreSearch: true });
-      const fresh = fetch(req)
+      const key = req.url.split('?')[0]; // one cached copy per file, whatever the query
+      const cached = await cache.match(key);
+      // 'no-cache' makes the browser check with the server instead of trusting
+      // its own HTTP cache, so a new version is picked up straight away.
+      const fresh = fetch(key, { cache: 'no-cache' })
         .then((res) => {
-          if (res.ok) cache.put(req, res.clone());
+          if (res.ok) cache.put(key, res.clone());
           return res;
         })
         .catch(() => cached);
